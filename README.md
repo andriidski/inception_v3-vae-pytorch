@@ -6,7 +6,7 @@ Implementation of a number of VAEs with various architectures in PyTorch:
 - `vae_conv.py` - VAE with two ConvNets for encoder / decoder 
 - `vae_inception.py` - VAE with [InceptionV3](https://arxiv.org/abs/1512.00567) modules adapted for feature extraction
 
-The networks are adapted for the STL10 dataset and trained on the unlabeled fold in self-supervised 
+The networks are adapted for the [STL10 dataset](http://ai.stanford.edu/~acoates/stl10/) and trained on the unlabeled fold in self-supervised 
 fashion in order to learn useful representations. Downstream tasks can be performed by freezing the
 weights of the net and extending the last layer with a full-connected `# hidden -> # output classes`
 layer along with a softmax.
