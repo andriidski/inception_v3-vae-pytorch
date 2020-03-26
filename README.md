@@ -16,7 +16,7 @@ layer along with a softmax.
 The training is done via the `train.py` script. A number of scripts can be used if training on a HPC 
 cluster such as NYU Prince, specifically:
 - `sbatch scripts/submit.sh`
-    - on a SLURM cluster will run the training job and email
+    - on a [SLURM cluster](https://slurm.schedmd.com/documentation.html) will run the training job and email
 the results (stdout) to the user notifying of the completion
 - `sh scripts/hpc.sh`
     - will push the local code and training scripts to the compute cluster
