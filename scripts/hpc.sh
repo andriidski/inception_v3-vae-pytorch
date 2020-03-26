@@ -1,0 +1,1 @@
+scp -r ./data ./models ./scripts ./utils train.py $1@prince:/scratch/$1/$2
