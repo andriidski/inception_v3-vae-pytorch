@@ -50,7 +50,7 @@ def log(model=None, optimizer=None):
     print("using model: " + model.__class__.__name__)
 
     net_parameters = sum(p.numel() for p in model.parameters())
-    print("number of model params: " + str(net_parameters))
+    print(f"\nmodel: {model.__class__.__name__}\nnumber of model params: {net_parameters:,}")
 
 
 """
