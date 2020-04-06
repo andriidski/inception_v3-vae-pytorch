@@ -1,8 +1,11 @@
-import traceback
 import torch
 import torch.utils.data
 from torch import optim
 from torchvision.utils import save_image
+
+import traceback
+import argparse
+
 from data.stl10 import get_loaders as stl10_loaders
 from utils.general import make_directory, TrainingConfig, DatasetConfig
 from utils.torch import variational_ELBO, weighted_variational_ELBO, save_training_data, log
@@ -10,7 +13,31 @@ from models.vae import VAE
 from models.vae_conv import ConvVAE
 from models.vae_inception import InceptionVAE
 
-config = TrainingConfig(cuda=True, batch_size=64, log_interval=100, epochs=10, output_dir_name='results')
+parser = argparse.ArgumentParser(description='InceptionV3 VAE')
+
+# params for training
+parser.add_argument('--lr', default=1e-3, type=float, help='learning rate')
+parser.add_argument('--epochs', type=int, default=10, metavar='N',
+                    help='number of epochs to train (default: 5)')
+parser.add_argument('--optimizer', default='adam', type=str, help='optimizer (default: adam)')
+parser.add_argument('--cuda', action='store_true', default=True,
+                    help='enables CUDA training')
+
+# params for data & data loading
+parser.add_argument('--num-workers', default=2, type=int, help='number of dataloader workers')
+parser.add_argument('--batch-size', default=64, type=int, help='data batch size')
+
+# util params
+parser.add_argument('--output-dir-name', type=str, default='results',
+                    help='name of output directory for training reconstructions and loss data')
+parser.add_argument('--log-interval', type=int, default=100, metavar='N',
+                    help='how many batches to wait before logging training status')
+
+args = parser.parse_args()
+args.cuda = args.cuda and torch.cuda.is_available()
+
+config = TrainingConfig(cuda=args.cuda, batch_size=args.batch_size, log_interval=args.log_interval, epochs=args.epochs,
+                        output_dir_name=args.output_dir_name)
 data_config = DatasetConfig(image_size=96, channels=3)
 
 device = torch.device("cuda" if config.cuda else "cpu")
@@ -20,7 +47,14 @@ train_loader, test_loader = stl10_loaders(config.batch_size, shuffle=True, num_w
 # can replace by either: VAE, ConvVAE, or InceptionVAE
 
 model = InceptionVAE().to(device)
-optimizer = optim.Adam(model.parameters(), lr=1e-3)
+
+assert args.optimizer in ['adam', 'adagrad', 'adadelta']
+if args.optimizer == 'adam':
+    optimizer = optim.Adam(model.parameters(), lr=args.lr)
+elif args.optimizer == 'adagrad':
+    optimizer = optim.Adagrad(model.parameters(), lr=args.lr)
+else:
+    optimizer = optim.Adadelta(model.parameters(), lr=args.lr)
 
 # log model and optimizer
 log(model=model, optimizer=optimizer)
