@@ -13,7 +13,7 @@ layer along with a softmax.
 
 ## Training
 
-The training is done via the `train.py` script. A number of scripts can be used if training on a HPC 
+The training is done via the `train.py` script and an `ArgumentParser` for hyper-parameter specification. A number of scripts can be used if training on a HPC 
 cluster such as NYU Prince, specifically:
 - `sbatch scripts/submit.sh`
     - on a [SLURM cluster](https://slurm.schedmd.com/documentation.html) will run the training job and email
