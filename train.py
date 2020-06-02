@@ -6,6 +6,9 @@ from torchvision.utils import save_image
 import traceback
 import argparse
 
+from knockknock import slack_sender
+from utils.config import SLACK_WEBHOOK_URL, SLACK_CHANNEL
+
 from data.stl10 import get_loaders as stl10_loaders
 from utils.general import make_directory, TrainingConfig, DatasetConfig
 from utils.torch import variational_ELBO, weighted_variational_ELBO, save_training_data, log
@@ -134,9 +137,16 @@ def start_training():
     save_training_data(historic_training_loss, historic_testing_loss, output_dir=config.output_dir_name)
 
 
-if __name__ == "__main__":
+@slack_sender(webhook_url=SLACK_WEBHOOK_URL, channel=SLACK_CHANNEL)
+def main():
     make_directory(dir_name=config.output_dir_name)
     try:
         start_training()
     except Exception as e:
-        print(traceback.format_exc())
+        trace = traceback.format_exc()
+        print(trace)
+        return trace
+
+
+if __name__ == "__main__":
+    main()
