@@ -33,6 +33,10 @@ $ pip3 install -r requirements.txt
 $ python3 train.py
 ```
 
+### Training Notifications
+
+Since training VAEs for a sufficient number of epochs may take a while, can use [knockknock](https://github.com/huggingface/knockknock) for getting notifications via either email or via a Slack workspace. To configure, can add a `.env` file with a `SLACK_WEBHOOK_URL` environment variable that points to the incoming webhook URL for an application added to a Slack workspace.
+
 ## Models
 | Name            | File                      | # parameters      |
 | --------------- |:--------------------------| -----------------:|
